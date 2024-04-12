@@ -89,20 +89,42 @@ def hashme(s, hashType):
         return hex(custom_hash(s))
 
 def custom_hash(s):
-	key = b"\x42\xa3\x84\x94\xaf"
+	seed = 0x1505
+	mul = 33
+	res = seed
+	for i in s:
+		tmp = i
+		if i > 0x60: tmp -= 32
+		res = tmp + res * mul
+	return res & 0xffffffff
+
+# def custom_hash(s):
+	# key = b"\x42\xa3\x84\x94\xaf"
 	
-	res = 0xf8
-	v5 = 0
-	for i in range(0, len(s)):
-		v6 = (s[i])
-		v8 = ((0x66666667 * i) >> 32) 
-		v9 = (i - 5 * ((v8 >> 31) + (v8 >> 1))) 
-		v10 = v5
-		v11 = ((0x66666667 * v5) >> 32) 
-		v5 += 1699
+	# res = 0xf8
+	# v5 = 0
+	# for i in range(0, len(s)):
+		# v6 = (s[i])
+		# v8 = ((0x66666667 * i) >> 32) 
+		# v9 = (i - 5 * ((v8 >> 31) + (v8 >> 1))) 
+		# v10 = v5
+		# v11 = ((0x66666667 * v5) >> 32) 
+		# v5 += 1699
 		
-		res += (v6 ^ (v6 + key[v9] + ((key[((v10 - 5 * ((v11 >> 31) + (v11 >> 1))) ) ] << 6) )) ^ 2)
-	return res		
+		# res += (v6 ^ (v6 + key[v9] + ((key[((v10 - 5 * ((v11 >> 31) + (v11 >> 1))) ) ] << 6) )) ^ 2)
+	# return res		
+
+# def custom_hash(s):
+	# res = 0
+	# for i in range(0, len(s)):
+		# tmp = 0
+		# if (i % 2 == 0):
+			# tmp = (res >> 3) ^ (res << 7) ^ s[i]
+		# else: 
+			# tmp = ~(s[i] ^ (res >> 5) ^ (res << 11))
+		# res ^= (tmp & 0xffffffff)
+	# return res & 0x7fffffff
+
 
 def build_patterns_and_comments(hashes):
     global patterns, comments
